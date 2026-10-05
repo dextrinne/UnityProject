@@ -7,15 +7,26 @@ public class TiltPlatform : MonoBehaviour
     public float maxAngle = 15f;
 
     private Quaternion startRotation;
+    private bool inputEnabled = true;
 
     void Start()
     {
-        // Запоминаем изначальный поворот платформы
         startRotation = transform.rotation;
     }
 
     void Update()
     {
+        if (!inputEnabled)
+        {
+            // Плавно возвращаемся в исходное положение
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                startRotation,
+                Time.deltaTime * tiltSpeed
+            );
+            return;
+        }
+
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
@@ -32,7 +43,12 @@ public class TiltPlatform : MonoBehaviour
         );
     }
 
-    // Метод для сброса платформы 
+    // Публичные методы для внешнего управления
+    public void SetInputEnabled(bool enabled)
+    {
+        inputEnabled = enabled;
+    }
+
     public void ResetRotation()
     {
         transform.rotation = startRotation;

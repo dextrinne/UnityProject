@@ -1,9 +1,10 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class FinishTrigger : MonoBehaviour
 {
-    public GameObject winText;
+    public GameObject winPanel;
     public GameObject ball;
+    public TiltPlatform platform;   // ← ссылка на скрипт платформы
     private bool isFinished = false;
 
     void OnTriggerEnter(Collider other)
@@ -12,12 +13,25 @@ public class FinishTrigger : MonoBehaviour
         if (!other.CompareTag("Player")) return;
 
         isFinished = true;
-        Debug.Log("Победа!");
-
-        if (winText != null) winText.SetActive(true);
 
         // Останавливаем шар
-        Rigidbody rb = other.GetComponent<Rigidbody>();
-        if (rb != null) rb.linearVelocity = Vector3.zero;
+        if (ball != null)
+        {
+            Rigidbody rb = ball.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+                rb.isKinematic = true;
+            }
+        }
+
+        // Замораживаем платформу
+        if (platform != null)
+            platform.SetInputEnabled(false);
+
+        // Показываем панель победы
+        if (winPanel != null)
+            winPanel.SetActive(true);
     }
 }
