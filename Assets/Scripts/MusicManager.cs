@@ -1,12 +1,11 @@
 using UnityEngine;
-using TMPro;
-using UnityEngine.SceneManagement;
 
 public class MusicManager : MonoBehaviour
 {
     public static MusicManager Instance;
 
     private AudioSource source;
+    private const string VOLUME_KEY = "MusicVolume";
     private const string MUSIC_KEY = "MusicOn";
 
     void Awake()
@@ -23,31 +22,36 @@ public class MusicManager : MonoBehaviour
         source = GetComponent<AudioSource>();
         if (source == null)
         {
-            Debug.LogError("MusicManager: нет AudioSource!");
-            return;
+            source = gameObject.AddComponent<AudioSource>();
         }
 
+        // Загружаем сохранённые настройки
+        float savedVolume = PlayerPrefs.GetFloat(VOLUME_KEY, 1f);
         bool musicOn = PlayerPrefs.GetInt(MUSIC_KEY, 1) == 1;
+
+        source.volume = savedVolume;
         source.mute = !musicOn;
     }
 
-    void OnEnable()
+    public void SetVolume(float volume)
     {
-        // Подписываемся на загрузку сцены — обновляем иконку каждый раз
-        SceneManager.sceneLoaded += OnSceneLoaded;
+        volume = Mathf.Clamp01(volume);
+        if (source != null)
+        {
+            source.volume = volume;
+            source.mute = volume <= 0.001f;
+        }
+        PlayerPrefs.SetFloat(VOLUME_KEY, volume);
+        PlayerPrefs.SetInt(MUSIC_KEY, (source != null && !source.mute) ? 1 : 0);
+        PlayerPrefs.Save();
     }
 
-    void OnDisable()
+    public float GetVolume()
     {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
+        return source != null ? source.volume : PlayerPrefs.GetFloat(VOLUME_KEY, 1f);
     }
 
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        // Сцена загрузилась — обновляем иконку на новой кнопке
-        UpdateButtonIcon();
-    }
-
+    // Метод возвращён для совместимости с HUDController
     public void ToggleMusic()
     {
         if (source == null) return;
@@ -55,19 +59,7 @@ public class MusicManager : MonoBehaviour
         source.mute = !source.mute;
         PlayerPrefs.SetInt(MUSIC_KEY, source.mute ? 0 : 1);
         PlayerPrefs.Save();
-        UpdateButtonIcon();
     }
 
     public bool IsMusicOn() => source != null && !source.mute;
-
-    private void UpdateButtonIcon()
-    {
-        // Ищем кнопку в ТЕКУЩЕЙ сцене каждый раз
-        GameObject btnObj = GameObject.Find("Btn_Music");
-        if (btnObj == null) return;
-
-        var tmp = btnObj.GetComponentInChildren<TextMeshProUGUI>();
-        if (tmp != null)
-            tmp.text = source.mute ? "♪-" : "♪";
-    }
 }
