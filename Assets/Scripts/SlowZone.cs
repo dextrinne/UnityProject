@@ -11,7 +11,7 @@ public class SlowZone : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             Rigidbody rb = other.GetComponent<Rigidbody>();
-            if (rb != null) rb.linearDamping = 3f; // сильное трение
+            if (rb != null) rb.linearDamping = 5f; // сильное трение
         }
     }
 

@@ -4,7 +4,9 @@ public class FinishTrigger : MonoBehaviour
 {
     public GameObject winPanel;
     public GameObject ball;
-    public TiltPlatform platform; 
+    public TiltPlatform platform;
+    public GameObject pauseMenuRoot;
+    public GameObject HUD;
     private bool isFinished = false;
 
     /// <summary>
@@ -18,6 +20,17 @@ public class FinishTrigger : MonoBehaviour
         if (!other.CompareTag("Player")) return;
 
         isFinished = true;
+        GameState.IsGameFinished = true;
+
+        // Выключаем паузу, чтобы не мешала
+        if (pauseMenuRoot != null & HUD != null)
+        {
+            pauseMenuRoot.SetActive(false);
+            HUD.SetActive(false);
+        }
+            
+        else
+            Debug.LogError("pauseMenuRoot не назначен!");
 
         // Останавливаем шар
         if (ball != null)
