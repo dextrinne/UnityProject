@@ -8,6 +8,9 @@ public class MusicManager : MonoBehaviour
     private const string VOLUME_KEY = "MusicVolume";
     private const string MUSIC_KEY = "MusicOn";
 
+    /// <summary>
+    /// Реализует синглтон, создаёт AudioSource при отсутствии и загружает сохранённые настройки музыки
+    /// </summary>
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -33,6 +36,10 @@ public class MusicManager : MonoBehaviour
         source.mute = !musicOn;
     }
 
+    /// <summary>
+    /// Устанавливает громкость музыки, обновляет mute и сохраняет настройки в PlayerPrefs
+    /// </summary>
+    /// <param name="volume">Громкость</param>
     public void SetVolume(float volume)
     {
         volume = Mathf.Clamp01(volume);
@@ -46,12 +53,18 @@ public class MusicManager : MonoBehaviour
         PlayerPrefs.Save();
     }
 
+    /// <summary>
+    /// Возвращает текущую громкость музыки
+    /// </summary>
+    /// <returns></returns>
     public float GetVolume()
     {
         return source != null ? source.volume : PlayerPrefs.GetFloat(VOLUME_KEY, 1f);
     }
 
-    // Метод возвращён для совместимости с HUDController
+    /// <summary>
+    /// Переключает музыку вкл/выкл и сохраняет состояние в PlayerPrefs
+    /// </summary>
     public void ToggleMusic()
     {
         if (source == null) return;

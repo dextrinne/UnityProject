@@ -4,9 +4,14 @@ public class FinishTrigger : MonoBehaviour
 {
     public GameObject winPanel;
     public GameObject ball;
-    public TiltPlatform platform;   // ← ссылка на скрипт платформы
+    public TiltPlatform platform; 
     private bool isFinished = false;
 
+    /// <summary>
+    /// Обрабатывает достижение финиша игроком: останавливает шар,
+    /// отключает управление платформой и показывает панель победы
+    /// </summary>
+    /// <param name="other">Коллайдер объекта, вошедшего в триггер</param>
     void OnTriggerEnter(Collider other)
     {
         if (isFinished) return;

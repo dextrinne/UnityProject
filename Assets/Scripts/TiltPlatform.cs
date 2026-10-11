@@ -9,11 +9,17 @@ public class TiltPlatform : MonoBehaviour
     private Quaternion startRotation;
     private bool inputEnabled = true;
 
+    /// <summary>
+    /// Сохраняет начальное вращение платформы
+    /// </summary>
     void Start()
     {
         startRotation = transform.rotation;
     }
 
+    /// <summary>
+    /// Наклоняет платформу по вводу игрока или плавно возвращает в исходное положение при отключённом управлении
+    /// </summary>
     void Update()
     {
         if (!inputEnabled)
@@ -43,12 +49,18 @@ public class TiltPlatform : MonoBehaviour
         );
     }
 
-    // Публичные методы для внешнего управления
+    /// <summary>
+    /// Включает или отключает управление наклоном платформы
+    /// </summary>
+    /// <param name="enabled">Новое состояние управления</param>
     public void SetInputEnabled(bool enabled)
     {
         inputEnabled = enabled;
     }
 
+    /// <summary>
+    /// Мгновенно возвращает платформу в начальное вращение
+    /// </summary>
     public void ResetRotation()
     {
         transform.rotation = startRotation;

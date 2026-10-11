@@ -7,6 +7,10 @@ public class WinPanelButtons : MonoBehaviour
     public Button btnRestart;
     public Button btnNext;
 
+    /// <summary>
+    /// При включении панели настраивает доступность кнопок "Назад", "Далее" и "Перезапуск"
+    /// в зависимости от текущего уровня
+    /// </summary>
     void OnEnable()
     {
         if (LevelManager.Instance == null) return;
@@ -16,7 +20,18 @@ public class WinPanelButtons : MonoBehaviour
         btnRestart.interactable = true;
     }
 
+    /// <summary>
+    /// Переходит на предыдущий уровень через LevelManager
+    /// </summary>
     public void OnPrevClicked() => LevelManager.Instance.PrevLevel();
+
+    /// <summary>
+    /// Перезапускает текущий уровень через LevelManager
+    /// </summary>
     public void OnRestartClicked() => LevelManager.Instance.RestartLevel();
+
+    /// <summary>
+    /// Переходит на следующий уровень через LevelManager
+    /// </summary>
     public void OnNextClicked() => LevelManager.Instance.NextLevel();
 }

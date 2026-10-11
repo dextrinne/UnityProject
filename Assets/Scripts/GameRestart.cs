@@ -3,6 +3,9 @@ using UnityEngine.SceneManagement;
 
 public class GameRestart : MonoBehaviour
 {
+    /// <summary>
+    /// Проверяет нажатие клавиши R и при необходимости перезапускает игру
+    /// </summary>
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.R))
@@ -11,10 +14,11 @@ public class GameRestart : MonoBehaviour
         }
     }
 
-    // вызывается и с клавиши, и с кнопки в UI
+    /// <summary>
+    /// Перезагружает текущую сцену по её индексу в Build Settings
+    /// </summary>
     public void Restart()
     {
-        // Перезагружаем ТЕКУЩУЮ сцену по её индексу в Build Settings
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
 
         if (currentSceneIndex < 0)
