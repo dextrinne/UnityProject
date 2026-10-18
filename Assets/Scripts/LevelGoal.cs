@@ -65,7 +65,7 @@ public class LevelGoal : MonoBehaviour
     void UpdateUI()
     {
         if (mushroomText != null)
-            mushroomText.text = $"Грибы: {collected}/{totalMushrooms}";
+            mushroomText.text = $"Грибочки: {collected}/{totalMushrooms}";
     }
 
     /// <summary>

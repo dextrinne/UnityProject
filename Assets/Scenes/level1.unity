@@ -2075,6 +2075,7 @@ MonoBehaviour:
   - Level2
   - Level3
   - Level4
+  - Level5
 --- !u!1001 &383871404
 PrefabInstance:
   m_ObjectHideFlags: 0

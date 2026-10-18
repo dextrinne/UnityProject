@@ -17,7 +17,7 @@ public class MovingObstacle : MonoBehaviour
     /// </summary>
     void Start()
     {
-        transform.position = startAtPointB ? pointB : pointA;
+        transform.localPosition = startAtPointB ? pointB : pointA;
         currentTarget = startAtPointB ? pointA : pointB;
     }
 
@@ -27,14 +27,14 @@ public class MovingObstacle : MonoBehaviour
     void Update()
     {
         // Плавно двигаемся к цели
-        transform.position = Vector3.MoveTowards(
-            transform.position,
+        transform.localPosition = Vector3.MoveTowards(
+            transform.localPosition,
             currentTarget,
             speed * Time.deltaTime
         );
 
         // Если дошли до точки — меняем цель
-        if (Vector3.Distance(transform.position, currentTarget) < 0.05f)
+        if (Vector3.Distance(transform.localPosition, currentTarget) < 0.05f)
         {
             currentTarget = (currentTarget == pointA) ? pointB : pointA;
         }
