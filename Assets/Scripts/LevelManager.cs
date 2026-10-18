@@ -6,7 +6,7 @@ public class LevelManager : MonoBehaviour
     public static LevelManager Instance;
 
     [Header("Список уровней (для переходов ◀ ▶)")]
-    public string[] levelScenes = { "Level1" };
+    public string[] levelScenes = { "Level1", "Level2", "Level3", "Level4", "Level5" };
 
     public int CurrentLevel { get; private set; }
 
@@ -35,6 +35,10 @@ public class LevelManager : MonoBehaviour
         CurrentLevel = index;
         PlayerPrefs.SetInt("CurrentLevel", index);
         PlayerPrefs.Save();
+
+        // Сбрасываем флаг победы перед загрузкой нового уровня
+        GameState.IsGameFinished = false;
+
         SceneManager.LoadScene(levelScenes[index]);
     }
 
@@ -46,6 +50,9 @@ public class LevelManager : MonoBehaviour
     /// </summary>
     public void RestartLevel()
     {
+        // Сбрасываем флаг победы, чтобы игра не думала, что мы всё ещё на экране победы
+        GameState.IsGameFinished = false;
+
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
