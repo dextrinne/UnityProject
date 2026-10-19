@@ -61,6 +61,9 @@ public class PauseMenuController : MonoBehaviour
     private Sequence currentSequence;
     private float lastNonZeroVolume = 0.8f;
 
+    /// <summary>
+    /// Инициализирует позиции панели, кнопки паузы, фона-затемнения и элементов меню
+    /// </summary>
     void Awake()
     {
         if (menuPanel == null)
@@ -69,7 +72,7 @@ public class PauseMenuController : MonoBehaviour
             return;
         }
 
-        // 1. Координаты шторки
+        // Координаты шторки
         if (startClosedPoint != null && targetOpenedPoint != null)
         {
             closedPos = startClosedPoint.anchoredPosition;
@@ -83,7 +86,7 @@ public class PauseMenuController : MonoBehaviour
 
         menuPanel.anchoredPosition = closedPos;
 
-        // 2. Инициализация кнопки вызова паузы
+        // Инициализация кнопки вызова паузы
         if (btnOpenPause != null)
         {
             btnOpenRect = btnOpenPause.GetComponent<RectTransform>();
@@ -99,7 +102,7 @@ public class PauseMenuController : MonoBehaviour
             }
         }
 
-        // 3. Фон-затемнение
+        // Фон-затемнение
         if (backgroundOverlay != null)
         {
             backgroundOverlay.alpha = 0f;
@@ -107,7 +110,7 @@ public class PauseMenuController : MonoBehaviour
             backgroundOverlay.interactable = false;
         }
 
-        // 4. Запоминаем позиции кнопок внутри меню
+        // Запоминаем позиции кнопок внутри меню
         if (menuItems != null && menuItems.Length > 0)
         {
             itemOriginalPositions = new Vector2[menuItems.Length];
@@ -127,6 +130,9 @@ public class PauseMenuController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Подписывает обработчики на кнопки меню, слайдер громкости и кнопку mute
+    /// </summary>
     void Start()
     {
         if (btnOpenPause != null)
@@ -153,6 +159,9 @@ public class PauseMenuController : MonoBehaviour
             btnMute.onClick.AddListener(OnMuteToggleClicked);
     }
 
+    /// <summary>
+    /// Отслеживает нажатие Esc для открытия/закрытия меню паузы
+    /// </summary>
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -162,6 +171,9 @@ public class PauseMenuController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Открывает меню паузы: анимирует кнопку открытия, фон, панель и каскадный вылет кнопок
+    /// </summary>
     public void OpenMenu()
     {
         if (isPaused) return;
@@ -170,7 +182,7 @@ public class PauseMenuController : MonoBehaviour
         currentSequence?.Kill();
         currentSequence = DOTween.Sequence().SetUpdate(true); // Анимация при timeScale = 0
 
-        // 1. Анимация кнопки открытия: уезжает вправо и растворяется
+        // Анимация кнопки открытия: уезжает вправо и растворяется
         if (btnOpenRect != null)
         {
             btnOpenPause.interactable = false;
@@ -181,7 +193,7 @@ public class PauseMenuController : MonoBehaviour
                 currentSequence.Join(btnOpenCanvasGroup.DOFade(0f, panelMoveDuration * 0.6f));
         }
 
-        // 2. Включаем блокировку кликов и проявляем фон
+        // Включаем блокировку кликов и проявляем фон
         if (backgroundOverlay != null)
         {
             backgroundOverlay.blocksRaycasts = true;
@@ -189,10 +201,10 @@ public class PauseMenuController : MonoBehaviour
             currentSequence.Join(backgroundOverlay.DOFade(1f, panelMoveDuration));
         }
 
-        // 3. Выдвигаем саму панель
+        // Выдвигаем саму панель
         currentSequence.Join(menuPanel.DOAnchorPos(openedPos, panelMoveDuration).SetEase(panelEase));
 
-        // 4. Каскадный вылет кнопок меню слева
+        // Каскадный вылет кнопок меню слева
         if (menuItems != null)
         {
             for (int i = 0; i < menuItems.Length; i++)
@@ -216,6 +228,9 @@ public class PauseMenuController : MonoBehaviour
         Time.timeScale = 0f;
     }
 
+    /// <summary>
+    /// Закрывает меню паузы
+    /// </summary>
     public void CloseMenu()
     {
         if (!isPaused) return;
@@ -225,7 +240,7 @@ public class PauseMenuController : MonoBehaviour
         currentSequence?.Kill();
         currentSequence = DOTween.Sequence().SetUpdate(true);
 
-        // 1. Прячем кнопки меню в обратном порядке
+        // Прячем кнопки меню в обратном порядке
         if (menuItems != null)
         {
             int count = menuItems.Length;
@@ -245,7 +260,7 @@ public class PauseMenuController : MonoBehaviour
             }
         }
 
-        // 2. Задвигаем шторку и убираем оверлей
+        // Задвигаем шторку и убираем оверлей
         float panelCloseStart = 0.1f;
         currentSequence.Insert(panelCloseStart, menuPanel.DOAnchorPos(closedPos, panelMoveDuration * 0.8f).SetEase(Ease.InQuad));
 
@@ -256,7 +271,7 @@ public class PauseMenuController : MonoBehaviour
             currentSequence.Insert(panelCloseStart, backgroundOverlay.DOFade(0f, panelMoveDuration * 0.8f));
         }
 
-        // 3. Возвращаем кнопку открытия на исходную позицию справа с мягким отскоком
+        // Возвращаем кнопку открытия на исходную позицию справа с мягким отскоком
         if (btnOpenRect != null)
         {
             float btnReturnStart = panelCloseStart + (panelMoveDuration * 0.3f);
@@ -273,6 +288,10 @@ public class PauseMenuController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Изменяет громкость музыки и обновляет визуал mute
+    /// </summary>
+    /// <param name="val">Новое значение громкости</param>
     private void OnVolumeChanged(float val)
     {
         if (val > 0.01f) lastNonZeroVolume = val;
@@ -280,6 +299,9 @@ public class PauseMenuController : MonoBehaviour
         UpdateMuteVisual(val > 0.01f);
     }
 
+    /// <summary>
+    /// Переключает mute: приглушает или восстанавливает последнюю громкость
+    /// </summary>
     private void OnMuteToggleClicked()
     {
         if (volumeSlider == null) return;
@@ -295,12 +317,19 @@ public class PauseMenuController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Обновляет визуальное состояние иконки mute
+    /// </summary>
+    /// <param name="isSoundOn">Включён ли звук</param>
     private void UpdateMuteVisual(bool isSoundOn)
     {
         if (muteIcon != null)
             muteIcon.color = isSoundOn ? Color.white : new Color(1f, 1f, 1f, 0.35f);
     }
 
+    /// <summary>
+    /// Перезапускает текущий уровень через LevelManager или напрямую сцену
+    /// </summary>
     private void OnRestartClicked()
     {
         Time.timeScale = 1f;
@@ -310,12 +339,18 @@ public class PauseMenuController : MonoBehaviour
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
+    /// <summary>
+    /// Загружает сцену главного меню
+    /// </summary>
     private void OnMainMenuClicked()
     {
         Time.timeScale = 1f;
         SceneManager.LoadScene(mainMenuSceneName);
     }
 
+    /// <summary>
+    /// Останавливает активные анимации DOTween при уничтожении объекта
+    /// </summary>
     void OnDestroy()
     {
         currentSequence?.Kill();
