@@ -4964,7 +4964,7 @@ MonoBehaviour:
   itemStartOffsetX: -80
   panelEase: 6
   itemEase: 27
-  mainMenuSceneName: MainMenu
+  mainMenuSceneName: TestingMainMenu
 --- !u!1 &1162209860
 GameObject:
   m_ObjectHideFlags: 0

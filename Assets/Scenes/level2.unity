@@ -4961,7 +4961,7 @@ MonoBehaviour:
   itemStartOffsetX: -80
   panelEase: 6
   itemEase: 27
-  mainMenuSceneName: MainMenu
+  mainMenuSceneName: TestingMainMenu
 --- !u!1001 &1147779891
 PrefabInstance:
   m_ObjectHideFlags: 0
