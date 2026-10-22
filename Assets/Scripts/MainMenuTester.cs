@@ -9,6 +9,9 @@ public class MainMenuTester : MonoBehaviour
     public bool TestPassed { get; private set; } = false;
     public string TestReport { get; private set; } = "";
 
+    /// <summary>
+    /// Находит MainMenuController при необходимости и запускает автотест, если включён runTestOnStart
+    /// </summary>
     private void Start()
     {
         if (menuController == null)
@@ -20,12 +23,20 @@ public class MainMenuTester : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Запускает автоматический тест переходов камеры главного меню
+    /// </summary>
     [ContextMenu("Запустить тест переходов камеры")]
     public void RunTest()
     {
         StartCoroutine(RunAutomatedTestRoutine());
     }
 
+    /// <summary>
+    /// Корутина автоматического теста: проверяет начальную позицию у портала, переход к шарику,
+    /// возврат к порталу и отлёт камеры при выходе с проверкой позиции, угла и затемнения
+    /// </summary>
+    /// <returns>Корутина</returns>
     public IEnumerator RunAutomatedTestRoutine()
     {
         Debug.Log("=================================================");

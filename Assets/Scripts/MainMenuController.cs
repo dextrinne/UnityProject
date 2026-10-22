@@ -50,6 +50,10 @@ public class MainMenuController : MonoBehaviour
 
     public event System.Action OnQuitExecuted;
 
+    /// <summary>
+    /// Выполняет Fade In экрана, задаёт исходные состояния панелей, подписывает кнопки,
+    /// инициализирует звук и строит сетку выбора уровней
+    /// </summary>
     private void Start()
     {
         // 1. Плавный Fade In при открытии меню
@@ -79,8 +83,9 @@ public class MainMenuController : MonoBehaviour
         BuildLevelSelectGrid();
     }
 
-    // --- Логика навигации с камерой ---
-
+    /// <summary>
+    /// Открывает настройки
+    /// </summary>
     public void OnOpenSettingsClicked()
     {
         if (isInteractingBlocked) return;
@@ -108,6 +113,9 @@ public class MainMenuController : MonoBehaviour
         }));
     }
 
+    /// <summary>
+    /// Возвращает в главное меню
+    /// </summary>
     public void OnBackToMainClicked()
     {
         if (isInteractingBlocked) return;
@@ -137,6 +145,9 @@ public class MainMenuController : MonoBehaviour
         }));
     }
 
+    /// <summary>
+    /// Открывает экран выбора уровня с плавным переходом между панелями
+    /// </summary>
     public void OnOpenLevelsClicked()
     {
         if (isInteractingBlocked) return;
@@ -148,8 +159,9 @@ public class MainMenuController : MonoBehaviour
         }));
     }
 
-    // --- Выход из игры (с отлетом камеры наверх и затемнением) ---
-
+    /// <summary>
+    /// Обрабатывает выход
+    /// </summary>
     public void OnQuitClicked()
     {
         if (isInteractingBlocked) return;
@@ -179,6 +191,9 @@ public class MainMenuController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Выполняет выход из игры
+    /// </summary>
     private void DoQuit()
     {
         Debug.Log("[MainMenu] Выход из игры");
@@ -192,8 +207,9 @@ public class MainMenuController : MonoBehaviour
 #endif
     }
 
-    // --- Запуск игры ---
-
+    /// <summary>
+    /// Запускает игру
+    /// </summary>
     public void OnPlayClicked()
     {
         if (isInteractingBlocked) return;
@@ -216,6 +232,10 @@ public class MainMenuController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Загружает уровень по индексу через LevelManager или напрямую через SceneManager
+    /// </summary>
+    /// <param name="levelIndex">Индекс уровня</param>
     private void LoadLevel(int levelIndex)
     {
         if (LevelManager.Instance != null)
@@ -229,8 +249,11 @@ public class MainMenuController : MonoBehaviour
         }
     }
 
-    // --- Утилиты плавного затухания ---
-
+    /// <summary>
+    /// Устанавливает состояние CanvasGroup
+    /// </summary>
+    /// <param name="group">Целевая CanvasGroup</param>
+    /// <param name="active">Включить/выключить</param>
     private void SetCanvasGroupState(CanvasGroup group, bool active)
     {
         if (group == null) return;
@@ -240,6 +263,15 @@ public class MainMenuController : MonoBehaviour
         group.gameObject.SetActive(active);
     }
 
+    /// <summary>
+    /// Корутина плавного изменения прозрачности CanvasGroup с колбэком по завершении
+    /// </summary>
+    /// <param name="group">Целевая CanvasGroup</param>
+    /// <param name="from">Начальная альфа</param>
+    /// <param name="to">Конечная альфа</param>
+    /// <param name="duration">Длительность</param>
+    /// <param name="onComplete">Колбэк по завершении</param>
+    /// <returns>Корутина</returns>
     private IEnumerator FadeRoutine(CanvasGroup group, float from, float to, float duration, System.Action onComplete = null)
     {
         if (group == null)
@@ -260,14 +292,21 @@ public class MainMenuController : MonoBehaviour
         onComplete?.Invoke();
     }
 
+    /// <summary>
+    /// Ждёт заданную задержку и вызывает действие
+    /// </summary>
+    /// <param name="delay">Задержка в секундах</param>
+    /// <param name="action">Действие для вызова</param>
+    /// <returns>Корутина</returns>
     private IEnumerator WaitAndExecute(float delay, System.Action action)
     {
         yield return new WaitForSeconds(delay);
         action?.Invoke();
     }
 
-    // --- Сетка уровней & Звук ---
-
+    /// <summary>
+    /// Создаёт кнопки выбора уровней по списку сцен LevelManager с обработчиками загрузки
+    /// </summary>
     private void BuildLevelSelectGrid()
     {
         if (levelButtonsContainer == null || levelButtonPrefab == null) return;
@@ -304,6 +343,9 @@ public class MainMenuController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Инициализирует настройки звука
+    /// </summary>
     private void InitAudioSettings()
     {
         float currentVol = MusicManager.Instance != null ? MusicManager.Instance.GetVolume() : 1f;
@@ -321,6 +363,10 @@ public class MainMenuController : MonoBehaviour
         UpdateMuteVisual(currentVol > 0.01f);
     }
 
+    /// <summary>
+    /// Обрабатывает изменение громкости через слайдер и обновляет визуал mute
+    /// </summary>
+    /// <param name="val">Новое значение громкости</param>
     private void OnVolumeChanged(float val)
     {
         if (val > 0.01f) lastNonZeroVolume = val;
@@ -328,6 +374,9 @@ public class MainMenuController : MonoBehaviour
         UpdateMuteVisual(val > 0.01f);
     }
 
+    /// <summary>
+    /// Переключает mute: приглушает или восстанавливает последнюю ненулевую громкость
+    /// </summary>
     private void OnMuteToggleClicked()
     {
         if (volumeSlider == null) return;
@@ -342,6 +391,10 @@ public class MainMenuController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Обновляет визуальное состояние иконки mute в зависимости от наличия звука
+    /// </summary>
+    /// <param name="isSoundOn">Включён ли звук</param>
     private void UpdateMuteVisual(bool isSoundOn)
     {
         if (muteIcon != null)
